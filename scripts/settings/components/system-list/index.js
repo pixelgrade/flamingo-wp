@@ -46,9 +46,36 @@ class SystemList extends Component {
         });
     }
 
+    updateStyleTag() {
+	    const { systems } = this.state;
+	    const system = systems.find(system => system.id === this.state.activeSystem);
+
+	    if ( ! system || ! system.gutenbergCSS ) {
+	        return;
+        }
+	    const css = system.gutenbergCSS;
+
+	    var style = document.getElementById( "style-xy-css" ),
+            oldTag = !! style;
+
+	    if ( ! oldTag ) {
+	        style = document.createElement( "style" );
+		    style.setAttribute( "id", "style-xy-css" );
+	    }
+
+	    console.log(style);
+
+        style.innerHTML = css;
+
+	    if ( ! oldTag ) {
+	        document.head.appendChild( style );
+        }
+    }
+
     handleSystemClick(event, id) {
         event.preventDefault();
         this.setState({activeSystem: id});
+	    document.getElementsByName( "new_option_name" )[0].value = id;
     }
 
     handleElementClick(event, index) {
@@ -59,17 +86,18 @@ class SystemList extends Component {
     render() {
         const { systems } = this.state;
         const system = systems.find(system => system.id === this.state.activeSystem);
+
+        // wtf
+        this.updateStyleTag();
+
         return ( systems &&
             <React.Fragment>
-                <PanelBody title="System List" opened={true}>
                     { systems &&
                         systems.map(system => {
                             const style = system.id === this.state.activeSystem ? {fontWeight: 'bold'} : {};
                             return <div style={style} onClick={(event) => this.handleSystemClick(event, system.id)}>{system.label}</div>
                         })
                     }
-                </PanelBody>
-                <PanelBody title="Element List" opened={true}>
                     { system &&
                         system.output.map((element, index) => {
                             const style = {
@@ -82,7 +110,6 @@ class SystemList extends Component {
                             return <div style={style} onClick={(event) => this.handleElementClick(event, index)}>{element.label}</div>
                         })
                     }
-                </PanelBody>
             </React.Fragment> || null
         );
     }

@@ -1,8 +1,5 @@
-import "./style.scss";
-
 import Sidebar from "./components/sidebar";
 import MenuItem from "./components/menu-item";
-import SystemList from "./components/system-list";
 
 const { Fragment } = wp.element;
 const { registerPlugin } = wp.plugins;
@@ -19,9 +16,7 @@ const withInspectorControls =  createHigherOrderComponent( ( BlockEdit ) => {
         return (
             <Fragment>
                 <BlockEdit { ...props } />
-                <InspectorControls>
-                    <SystemList onUpdate={handleUpdate}/>
-                </InspectorControls>
+                <InspectorControls></InspectorControls>
             </Fragment>
         );
     };

@@ -1,6 +1,5 @@
 import { PluginSidebar } from "@wordpress/editPost";
 
-import PhotoList from "../photo-list";
 import Icon from "../icon";
 
 const Sidebar = () => (
@@ -10,7 +9,6 @@ const Sidebar = () => (
     title="Drop it: Unsplash.com"
   >
 
-    <PhotoList />
   </PluginSidebar>
 );
 

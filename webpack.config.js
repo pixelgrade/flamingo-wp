@@ -29,7 +29,7 @@ const extractConfig = {
   ]
 };
 
-const entryPointNames = ["sidebar", "i18n"];
+const entryPointNames = ["sidebar", "i18n", "settings"];
 
 const externals = {
   react: "React"
