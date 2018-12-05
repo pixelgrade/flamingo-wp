@@ -5,7 +5,9 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "firebase": "^5.5.8",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3"
   },
   "scripts": {
     "lint": "eslint scripts",

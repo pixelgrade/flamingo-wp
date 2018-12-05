@@ -75,16 +75,9 @@ function dropit_sidebar_script_register() {
 	wp_register_script(
 		'dropit-sidebar',
 		dropit_url( 'scripts/settings/build/index.js' ),
-		array( 'wp-plugins', 'wp-element', 'wp-edit-post', 'wp-i18n', 'wp-api-request', 'wp-data', 'wp-components', 'wp-blocks', 'wp-editor', 'dropit-i18n' ),
+		array( 'dropit-i18n' ),
 		filemtime( dropit_dir_path() . 'scripts/settings/build/index.js' ),
 		true
-	);
-
-	wp_register_style(
-		'dropit-sidebar',
-		dropit_url( 'scripts/sidebar/build/style.css' ),
-		array(),
-		filemtime( dropit_dir_path() . 'scripts/sidebar/build/style.css' )
 	);
 
 	$script_params = array(
@@ -92,7 +85,6 @@ function dropit_sidebar_script_register() {
 	);
 
 	wp_enqueue_script( 'dropit-sidebar' );
-	wp_enqueue_style( 'dropit-sidebar' );
 	wp_localize_script( 'dropit-sidebar', 'scriptParams', $script_params );
 }
 add_action( 'admin_init', 'dropit_sidebar_script_register' );

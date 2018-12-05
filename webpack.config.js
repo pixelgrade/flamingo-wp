@@ -29,32 +29,16 @@ const extractConfig = {
   ]
 };
 
-const entryPointNames = ["sidebar", "i18n", "settings"];
+const entryPointNames = ["i18n", "settings"];
 
 const externals = {
-  react: "React"
+  react: "React",
+  reactDom: "ReactDOM"
 };
+
 entryPointNames.forEach(entryPointName => {
   externals["@dropit/" + entryPointName] = {
     this: ["dropit", entryPointName]
-  };
-});
-
-const wpDependencies = [
-  "components",
-  "element",
-  "blocks",
-  "utils",
-  "date",
-  "data",
-  "i18n",
-  "editPost",
-  "plugins",
-  "apiRequest"
-];
-wpDependencies.forEach(wpDependency => {
-  externals["@wordpress/" + wpDependency] = {
-    this: ["wp", wpDependency]
   };
 });
 

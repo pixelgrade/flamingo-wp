@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
 import SystemList from "../system-list";
 import LogIn from "../log-in";
 
-class SystemPicker extends Component {
+class SystemPicker extends React.Component {
 	render() {
 		return (
 			<React.Fragment>

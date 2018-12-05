@@ -1,13 +1,7 @@
-import React, { Component } from 'react';
 
-import firebase from 'firebase';
-import { firestore, firebaseApp } from '../../firebase';
+class SystemList extends React.Component {
 
-const { PanelBody } = wp.components;
-const { registerBlockStyle } = wp.blocks;
-
-class SystemList extends Component {
-    constructor() {
+	constructor() {
         super(...arguments);
         this.state = {
             systems: [],
@@ -54,7 +48,7 @@ class SystemList extends Component {
             oldTag = !! style;
 
 	    if ( ! oldTag ) {
-	        style = document.createElement( "style" );
+	        style = window.document.createElement( "style" );
 		    style.setAttribute( "id", "style-xy-css" );
 	    }
 

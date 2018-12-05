@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import firebase from 'firebase';
 
 class LogIn extends Component {
@@ -15,13 +15,10 @@ class LogIn extends Component {
 		const password = this.myPassword.current.value;
 		firebase.auth().signInWithEmailAndPassword(email, password)
 	        .then(() => {
-	        	console.log(1);
 	        	debugger;
 		        firebase.auth().createCustomToken(uid).then(function(customToken) {
-			        console.log(2);
 			        console.log(customToken);
 		        }).catch(error => {
-			        console.log(3);
 		        	console.log(error);
 		        })
 	        })
