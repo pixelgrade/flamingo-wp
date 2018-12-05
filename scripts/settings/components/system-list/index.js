@@ -23,7 +23,6 @@ class SystemList extends Component {
             });
             if (systems.length) {
                 newState.systems = systems;
-                newState.activeSystem = systems[0].id;
                 this.setState(newState);
             }
         });
