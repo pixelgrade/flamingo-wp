@@ -98,18 +98,6 @@ class SystemList extends Component {
                             return <div style={style} onClick={(event) => this.handleSystemClick(event, system.id)}>{system.label}</div>
                         })
                     }
-                    { system &&
-                        system.output.map((element, index) => {
-                            const style = {
-                                fontFamily: element.fontFamily,
-                                fontSize: element.fontSize,
-                                lineHeight: 1.5,
-                                color: element.color,
-                                border: index === this.state.activeElement ? '1px solid' : 0,
-                            }
-                            return <div style={style} onClick={(event) => this.handleElementClick(event, index)}>{element.label}</div>
-                        })
-                    }
             </React.Fragment> || null
         );
     }

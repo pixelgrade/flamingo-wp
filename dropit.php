@@ -54,12 +54,10 @@ function my_cool_plugin_settings_page() {
 					<th scope="row">New Option Name</th>
 					<td><input type="text" name="new_option_name" value="<?php echo esc_attr( get_option('new_option_name') ); ?>" /></td>
 				</tr>
-
 				<tr valign="top">
 					<th scope="row">Some Other Option</th>
 					<td><input type="text" name="some_other_option" value="<?php echo esc_attr( get_option('some_other_option') ); ?>" /></td>
 				</tr>
-
 				<tr valign="top">
 					<th scope="row">Options, Etc.</th>
 					<td><input type="text" name="option_etc" value="<?php echo esc_attr( get_option('option_etc') ); ?>" /></td>
