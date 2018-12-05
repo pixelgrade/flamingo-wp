@@ -6,7 +6,6 @@ class SystemPicker extends Component {
 	render() {
 		return (
 			<React.Fragment>
-				<h1>Tadaaa!!!</h1>
 				<LogIn />
 				<SystemList />
 			</React.Fragment>

@@ -12,7 +12,6 @@ class SystemList extends Component {
         this.state = {
             systems: [],
             activeSystem: null,
-            activeElement: null,
         };
 
         firestore.collection("systems").get().then(querySnapshot => {
@@ -25,9 +24,6 @@ class SystemList extends Component {
             if (systems.length) {
                 newState.systems = systems;
                 newState.activeSystem = systems[0].id;
-                if (systems[0].output.length) {
-                    newState.activeElement = 0;
-                }
                 this.setState(newState);
             }
         });
@@ -63,8 +59,6 @@ class SystemList extends Component {
 		    style.setAttribute( "id", "style-xy-css" );
 	    }
 
-	    console.log(style);
-
         style.innerHTML = css;
 
 	    if ( ! oldTag ) {
@@ -72,10 +66,12 @@ class SystemList extends Component {
         }
     }
 
-    handleSystemClick(event, id) {
+    handleSystemClick(event, system) {
         event.preventDefault();
-        this.setState({activeSystem: id});
-	    document.getElementsByName( "new_option_name" )[0].value = id;
+        this.setState({activeSystem: system.id});
+	    document.getElementsByName( "new_option_name" )[0].value = system.id;
+	    document.getElementsByName( "some_other_option" )[0].value = system.published.css;
+	    document.getElementsByName( "option_etc" )[0].value = system.published.gutenbergCSS;
     }
 
     handleElementClick(event, index) {
@@ -87,17 +83,22 @@ class SystemList extends Component {
         const { systems } = this.state;
         const system = systems.find(system => system.id === this.state.activeSystem);
 
-        // wtf
+	    // wtf
         this.updateStyleTag();
 
         return ( systems &&
             <React.Fragment>
-                    { systems &&
-                        systems.map(system => {
-                            const style = system.id === this.state.activeSystem ? {fontWeight: 'bold'} : {};
-                            return <div style={style} onClick={(event) => this.handleSystemClick(event, system.id)}>{system.label}</div>
-                        })
-                    }
+                <h2>Design Systems List</h2>
+                { systems.map(system => {
+                    const className = system.id === this.state.activeSystem ? 'active' : '';
+	                const style = system.id === this.state.activeSystem ? {fontWeight: 'bold'} : {};
+
+	                return (
+                        <div className={className} style={style} onClick={(event) => this.handleSystemClick(event, system)}>
+                            {system.published.label}
+                        </div>
+                    )
+                }) }
             </React.Fragment> || null
         );
     }
