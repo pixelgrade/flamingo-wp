@@ -1,6 +1,2 @@
-scripts/*/build
 node_modules
-dropit.zip
 .DS_Store
-svn
-languages
