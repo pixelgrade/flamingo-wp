@@ -2,12 +2,12 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 
 const firebaseApp = firebase.initializeApp({
-	apiKey: "AIzaSyDCRHpo1MuTo1qlLD8vfjkQ6ZuhCvgKVjk",
-	authDomain: "style-manager-1540478992424.firebaseapp.com",
-	databaseURL: "https://style-manager-1540478992424.firebaseio.com",
-	projectId: "style-manager-1540478992424",
-	storageBucket: "style-manager-1540478992424.appspot.com",
-	messagingSenderId: "662262706587"
+    apiKey: "AIzaSyBYDjKxj9eHNyAvUKHu47frMrR9xsjfv7U",
+    authDomain: "flamingo-beb8c.firebaseapp.com",
+    databaseURL: "https://flamingo-beb8c.firebaseio.com",
+    projectId: "flamingo-beb8c",
+    storageBucket: "",
+    messagingSenderId: "129383236680"
 });
 
 const firestore = firebase.firestore();

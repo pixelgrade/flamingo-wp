@@ -12,16 +12,15 @@ class CSSOutput extends Component {
 		};
 
 		const docRef = firestore.collection("systems").doc(props.system);
+		const status = props.status === 'published' ? 'published' : 'draft';
 
-		docRef.get().then(doc => {
+		const updateStateFromDoc = doc => {
 			const data = doc.data();
-			this.setState({ css: data.draft.css });
-		});
+			this.setState({ css: data[status].css });
+		}
 
-		docRef.onSnapshot(doc => {
-			const data = doc.data();
-			this.setState({ css: data.draft.css });
-		});
+		docRef.get().then(updateStateFromDoc);
+		docRef.onSnapshot(updateStateFromDoc);
 	}
 
 	render() {

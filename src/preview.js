@@ -15,9 +15,10 @@ if ( picker ) {
 }
 
 if ( output ) {
-	const status = output.getAttribute('data-status') || 'draft'
+	const status = output.getAttribute('data-status') || 'draft';
+    const systemId = window.scriptParams.flamingo_system_id;
 	ReactDOM.render(
-		<CSSOutput system="876dfe31-4684-4ec5-bd7c-cd05d0e3b30a" status={status} />,
+		<CSSOutput system={systemId} status={status} />,
 		output
 	);
 }
