@@ -105,9 +105,10 @@ function get_flamingo_frontend_css() {
 function flamingo_preview_link() {
 	global $wp_admin_bar;
 
-	$required_cap = apply_filters( 'rtl_tester_capability_check', 'activate_plugins' );
+	$required_cap = apply_filters( 'flamingo_capability_check', 'activate_plugins' );
 
-	if ( ! current_user_can( $required_cap ) || ! is_admin_bar_showing() )
+	// Only show the link if the current user has the necessary caps, the bar is showing and not in the WordPress dashboard.
+	if ( ! current_user_can( $required_cap ) || ! is_admin_bar_showing() || is_admin() )
 		return;
 
 	$flag = 'flamingo_preview';
@@ -136,3 +137,29 @@ function flamingo_set_preview() {
 	update_user_meta( $user_id, 'flamingo_preview', !! $_GET['flamingo_preview'] );
 }
 add_action( 'init', 'flamingo_set_preview' );
+
+function flamingo_add_preview_query_var( $permalink ) {
+	$flag = 'flamingo_preview';
+	$is_preview = isset( $_GET[$flag] );
+
+	if ( $is_preview && ! empty( $permalink ) ) {
+		$permalink = add_query_arg( $flag, true, $permalink );
+	}
+
+	return $permalink;
+}
+add_filter( 'post_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'page_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'post_type_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'attachment_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'year_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'month_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'day_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'search_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'post_type_archive_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'get_pagenum_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'get_comments_pagenum_link', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'home_url', 'flamingo_add_preview_query_var', 999, 1 );
+//add_filter( 'site_url', 'flamingo_add_preview_query_var', 999, 1 );
+add_filter( 'the_privacy_policy_link', 'flamingo_add_preview_query_var', 999, 1 );
+
