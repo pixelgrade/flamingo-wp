@@ -52,12 +52,13 @@ function flamingo_save_system_callback() {
 	$system_id = $_POST['id'];
 	$css = $_POST['css'];
     update_option( 'flamingo_system_id', $system_id );
+	delete_transient( 'flamingo_frontend_css' );
 	die();
 }
 add_action('wp_ajax_flamingo_save_system', 'flamingo_save_system_callback');
 
 function flamingo_css_output() {
-	if ( !! $_GET['preview'] ) {
+	if ( isset( $_GET['flamingo_preview'] ) ) {
 	    echo '<div id="flamingo-css-output" data-status="draft"></div>';
     } else {
 		echo '<style>';
@@ -96,9 +97,42 @@ function get_flamingo_frontend_css() {
 
         $css = $response_data['data']['css'];
 
-        // Cache it
-        set_transient( 'flamingo_frontend_css', $css, 6 * HOUR_IN_SECONDS );
+        set_transient( 'flamingo_frontend_css', $css, HOUR_IN_SECONDS );
     }
     return $css;
 }
 
+function flamingo_preview_link() {
+	global $wp_admin_bar;
+
+	$required_cap = apply_filters( 'rtl_tester_capability_check', 'activate_plugins' );
+
+	if ( ! current_user_can( $required_cap ) || ! is_admin_bar_showing() )
+		return;
+
+	$flag = 'flamingo_preview';
+	$is_preview = isset( $_GET[$flag] );
+
+	if ( $is_preview ) {
+		$label = __( 'Exit Flamingo Preview', 'flamingo' );
+		$href = remove_query_arg( $flag );
+    } else {
+		$label = __( 'Enter Flamingo Preview', 'flamingo' );
+	    $href = add_query_arg( $flag, true );
+    }
+
+	$wp_admin_bar->add_menu(
+		array(
+			'id'    => 'flamingo_preview',
+			'title' => $label,
+			'href'  => $href
+		)
+	);
+}
+add_action( 'admin_bar_menu', 'flamingo_preview_link', 999 );
+
+function flamingo_set_preview() {
+	$user_id = get_current_user_id();
+	update_user_meta( $user_id, 'flamingo_preview', !! $_GET['flamingo_preview'] );
+}
+add_action( 'init', 'flamingo_set_preview' );
