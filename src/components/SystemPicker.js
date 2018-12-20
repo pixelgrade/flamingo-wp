@@ -1,28 +1,24 @@
 import React, { Component } from 'react';
 
-import Login from './Login';
 import { firestore } from '../firebase';
 import firebase from 'firebase';
 import axios from 'axios';
 
 import '../scss/style.scss';
 
-class SystemList extends Component {
+class SystemPicker extends Component {
 
 	constructor() {
 		super();
 
 		this.state = {
 			systems: [],
+			loading: false,
 			activeSystem: window.scriptParams.flamingo_system_id,
 		}
 	}
 
-	componentDidMount() {
-		this.fetchSystems();
-	}
-
-	fetchSystems() {
+	componentWillMount() {
 		const user = firebase.auth().currentUser;
 		const systems = firestore.collection("systems").where('owner', '==', user.uid);
 		systems.get().then(querySnapshot => {
@@ -38,7 +34,11 @@ class SystemList extends Component {
 			}
 		});
 
-		systems.onSnapshot(this.onSnapshot);
+		this.offSnapshot = systems.onSnapshot(this.onSnapshot);
+	}
+
+	componentWillUnmount() {
+		this.offSnapshot();
 	}
 
 	onSnapshot(snapshot) {
@@ -60,28 +60,6 @@ class SystemList extends Component {
 		this.setState({activeSystem: system.id});
 	}
 
-	submit() {
-        const { ajaxurl } = window.scriptParams;
-
-        const system = this.state.systems.find(system => {
-        	return system.id === this.state.activeSystem
-        });
-
-        if ( system ) {
-	        var data = new FormData();
-	        data.append( 'action', 'flamingo_save_system' );
-	        data.append( 'id', system.id );
-	        data.append( 'css', system.published.css );
-	        axios.post( ajaxurl, data ).then(function() {
-	        	alert('ura');
-	        });
-        }
-	}
-
-	signOut() {
-		firebase.auth().signOut();
-	}
-
 	renderChoice(system) {
 		const className = system.id === this.state.activeSystem ? 'active' : '';
 
@@ -96,6 +74,24 @@ class SystemList extends Component {
 		</div>
 	}
 
+	submit() {
+        const { ajaxurl } = window.scriptParams;
+
+        const system = this.state.systems.find(system => {
+        	return system.id === this.state.activeSystem
+        });
+
+        if ( system ) {
+	        var data = new FormData();
+	        this.setState({ loading: true });
+	        data.append( 'action', 'flamingo_save_system' );
+	        data.append( 'id', system.id );
+	        axios.post( ajaxurl, data ).finally(() => {
+	        	this.setState({ loading: false });
+	        });
+        }
+	}
+
 	render() {
 		return (
 			<React.Fragment>
@@ -104,45 +100,9 @@ class SystemList extends Component {
 					{this.state.systems.map(system => this.renderChoice(system))}
 				</div>
 				<button onClick={this.submit.bind(this)}>Submit</button>
-				<button onClick={this.signOut}>Log Out</button>
+				{ this.state.loading ? 'Loading' : null }
 			</React.Fragment>
 		)
-	}
-}
-
-class SystemPicker extends Component {
-
-	constructor() {
-		super();
-
-		this.token = window.scriptParams.flamingo_token;
-
-		this.state = {
-			authed: false,
-		};
-
-		if ( this.token ) {
-			firebase.auth().signInWithCustomToken(this.token).catch(function(error) {
-			});
-		}
-
-        this.removeListener = firebase.auth().onAuthStateChanged((user) => {
-            this.setState({
-                authed: !! user,
-            })
-        });
-	}
-
-    componentWillUnmount () {
-        this.removeListener()
-    }
-
-	render() {
-		if ( ! this.state.authed ) {
-			return <Login />
-		} else {
-			return <SystemList />
-		}
 	}
 }
 

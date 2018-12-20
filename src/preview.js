@@ -1,15 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import SystemPicker from './components/SystemPicker';
+import Login from './components/Login';
 import CSSOutput from './components/CSSOutput';
 
-var picker = document.getElementById('flamingo-system-picker');
-var output = document.getElementById('flamingo-css-output');
+import { firebaseApp } from './firebase';
+
+const picker = document.getElementById('flamingo-system-picker');
+const output = document.getElementById('flamingo-preview-css');
 
 if ( picker ) {
 	ReactDOM.render(
-		<SystemPicker />,
+		<Login />,
 		picker
 	);
 }

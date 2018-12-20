@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-
-import { firestore, firebaseApp } from '../firebase';
+import firebase from 'firebase';
 
 class CSSOutput extends Component {
 
@@ -11,20 +10,24 @@ class CSSOutput extends Component {
 			css: '',
 		};
 
-		const docRef = firestore.collection("systems").doc(props.system);
-		const status = props.status === 'published' ? 'published' : 'draft';
+        this.removeListener = firebase.auth().onAuthStateChanged(user => {
+			if ( user ) {
+				const docRef = firebase.firestore().collection("systems").doc(props.system);
 
-		const updateStateFromDoc = doc => {
-			const data = doc.data();
-			this.setState({ css: data[status].css });
-		}
+				docRef.get().then(this.updateStateFromDoc.bind(this));
+				docRef.onSnapshot(this.updateStateFromDoc.bind(this));
+			}
+        });
+	}
 
-		docRef.get().then(updateStateFromDoc);
-		docRef.onSnapshot(updateStateFromDoc);
+	updateStateFromDoc(doc) {
+		const data = doc.data();
+		const status = this.props.status === 'published' ? 'published' : 'draft';
+		this.setState({ css: data[status].css });
 	}
 
 	render() {
-		return <style>{this.state.css}</style>;
+		return this.state.css;
 	}
 }
 

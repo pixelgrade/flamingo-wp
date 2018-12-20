@@ -31,7 +31,7 @@ function flamingo_register_scripts() {
 
 	$script_params = array(
 		'ajaxurl' => admin_url( 'admin-ajax.php' ),
-		'flamingo_token' => get_option( 'flamingo_token' ),
+		'flamingo_refresh_token' => get_option( 'flamingo_refresh_token' ),
 		'flamingo_system_id' => get_option( 'flamingo_system_id' ),
 	);
 
@@ -41,12 +41,21 @@ function flamingo_register_scripts() {
 add_action( 'admin_init', 'flamingo_register_scripts' );
 add_action( 'wp_enqueue_scripts', 'flamingo_register_scripts' );
 
-function flamingo_save_token_callback() {
-	$token = $_POST['token'];
-    update_option( 'flamingo_token', $token );
+function flamingo_save_tokens_callback() {
+    $refresh_token = $_POST['refresh_token'];
+    $custom_token = $_POST['custom_token'];
+    update_option( 'flamingo_refresh_token', $refresh_token );
+    update_option( 'flamingo_custom_token', $custom_token );
+    die();
+}
+add_action('wp_ajax_flamingo_save_tokens', 'flamingo_save_tokens_callback');
+
+function flamingo_delete_tokens_callback() {
+    delete_option( 'flamingo_refresh_token' );
+    delete_option( 'flamingo_custom_token' );
 	die();
 }
-add_action('wp_ajax_flamingo_save_token', 'flamingo_save_token_callback');
+add_action('wp_ajax_flamingo_delete_tokens', 'flamingo_delete_tokens_callback');
 
 function flamingo_save_system_callback() {
 	$system_id = $_POST['id'];
@@ -58,12 +67,9 @@ function flamingo_save_system_callback() {
 add_action('wp_ajax_flamingo_save_system', 'flamingo_save_system_callback');
 
 function flamingo_css_output() {
-	if ( isset( $_GET['flamingo_preview'] ) ) {
-	    echo '<div id="flamingo-css-output" data-status="draft"></div>';
-    } else {
-		echo '<style>';
-		echo get_flamingo_frontend_css();
-		echo '</style>';
+	echo '<style id="flamingo-css">' . get_flamingo_frontend_css() . '</style>';
+    if ( isset( $_GET['flamingo_preview'] ) ) {
+        echo '<style id="flamingo-preview-css" data-status="draft"></style>';
     }
 }
 add_action( 'wp_footer', 'flamingo_css_output' );
@@ -81,7 +87,7 @@ function get_flamingo_frontend_css() {
             'timeout'   => 4,
             'blocking'  => true,
             'body' => array(
-                'token' => get_option( 'flamingo_token' ),
+                'token' => get_option( 'flamingo_custom_token' ),
             ),
             'sslverify' => false,
         );
@@ -92,6 +98,9 @@ function get_flamingo_frontend_css() {
         $response_data = json_decode( wp_remote_retrieve_body( $response ), true );
 
         if ( null === $response_data || empty( $response_data['data']['css'] ) || 'success' !== $response_data['code'] ) {
+            ob_start();
+            print_r($response_data);
+	        return ob_get_clean();
             return false;
         }
 
