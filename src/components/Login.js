@@ -24,14 +24,17 @@ class Login extends Component {
     componentWillMount() {
         const refresh_token = window.scriptParams.flamingo_refresh_token;
         if ( refresh_token ) {
-            this.getNewAccessToken(refresh_token).then(access_token => {
+            this.getNewAccessToken(refresh_token)
+            .then(access_token => {
                 return axios.post('https://useflamingo.com/api/v1/refresh_token', {
                     id_token: access_token
                 })
-            }).then(response => {
-                firebase.auth().signInWithCustomToken(response.data).catch(error => {
-                    console.log(error);
-                });
+            })
+            .then(response => {
+                return firebase.auth().signInWithCustomToken(response.data);
+            })
+            .catch(error => {
+                console.log(error);
             });
         }
     }
@@ -66,7 +69,8 @@ class Login extends Component {
         return axios.post('https://securetoken.googleapis.com/v1/token?key=AIzaSyBYDjKxj9eHNyAvUKHu47frMrR9xsjfv7U', {
             grant_type: 'refresh_token',
             refresh_token: refresh_token
-        }).then(response => {
+        })
+        .then(response => {
             return Promise.resolve(response.data.access_token);
         })
     }
